@@ -2000,4 +2000,122 @@ const movies = [
     genre: ['Comedy', 'Drama'],
     score: 8
   }
-];
+]
+
+function getAllDirectors(moviesArray) {
+  const directors = moviesArray.map(d => d.director)
+  const uniqueDirectors = [...new Set(directors)]
+
+
+  return uniqueDirectors
+}
+console.log(getAllDirectors(movies))
+
+function howManyMovies(moviesArray) {
+
+  if (moviesArray.length === 0) return 0
+
+  const filteredMovies = moviesArray.filter(movie => movie.director === 'Steven Spielberg' && movie.genre.includes('Drama'))
+  return filteredMovies.length
+}
+
+console.log(howManyMovies(movies))
+
+function scoresAverage(moviesArray) {
+  if (moviesArray.length === 0) return 0
+  const totalScore = moviesArray.reduce((sum, movie) => {
+    return sum + (movie.score || 0)
+  }, 0)
+
+  const avgScore = totalScore / moviesArray.length
+
+  return Number(avgScore.toFixed(2))
+}
+console.log(scoresAverage(movies))
+
+function orderByYear(moviesArray) {
+  const moviesArrayCopy = [...moviesArray]
+
+  moviesArrayCopy.sort((a, b) => {
+    if (a.year !== b.year) {
+      return a.year - b.year
+    }
+    return a.title.localeCompare(b.title)
+  })
+
+  return moviesArrayCopy
+}
+
+console.log(orderByYear(movies))
+
+function orderAlphabetically(moviesArray) {
+  const moviesArrayCopy = [...moviesArray]
+
+  const filteredByTitle = moviesArrayCopy.map(t => t.title)
+  filteredByTitle.sort()
+
+  if (filteredByTitle.length > 20) {
+    return filteredByTitle.slice(0, 20)
+  }
+  return filteredByTitle
+}
+console.log(orderAlphabetically(movies))
+
+function turnHoursToMinutes(moviesArray) {
+
+  const moviesArrayCopy = [...moviesArray]
+
+  const result = moviesArrayCopy.map(t => {
+    const durationParts = t.duration.split(' ')
+
+    let minutes = 0
+    for (let part of durationParts) {
+      if (part.includes('h')) {
+        minutes += parseInt(part) * 60
+      }
+      if (part.includes('min')) {
+        minutes += parseInt(part)
+      }
+
+    }
+    return {
+      ...t,
+      duration: minutes
+    }
+  })
+
+  return result
+}
+console.log(turnHoursToMinutes(movies))
+
+
+function bestYearAvg(moviesArray) {
+  if (moviesArray.length === 0) return null
+
+  if (moviesArray.length === 1) {
+    const singleMovie = moviesArray[0]
+    return `The best year was ${singleMovie.year} with an average score of ${singleMovie.score.toFixed(1)}`
+  }
+
+  const moviesByYear = {}
+  moviesArray.forEach(movie => {
+    if (!moviesByYear[movie.year]) {
+      moviesByYear[movie.year] = []
+    }
+    moviesByYear[movie.year].push(movie)
+  })
+
+  const avgScoresByYear = []
+  for (const year in moviesByYear) {
+    const avgScore = scoresAverage(moviesByYear[year])
+    avgScoresByYear.push({ year: parseInt(year), averageScore: avgScore })
+  }
+
+  avgScoresByYear.sort((a, b) => b.averageScore - a.averageScore || a.year - b.year)
+  const bestYear = avgScoresByYear[0]
+
+  return `The best year was ${bestYear.year} with an average score of ${bestYear.averageScore.toFixed(1)}`
+}
+
+
+console.log(bestYearAvg(movies))
